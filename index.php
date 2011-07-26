@@ -4,7 +4,8 @@ $isDev = true;
 
 // Dev Environment : Forces New Version Generation and No-Minification for Debugging
 if(isset($isDev) && $isDev) {
-
+	include_once('cachebust/clear.php');
+	/* * /
 	// Could be easiest…
 	// ie. $cacheBustPath = 'http://'.$_SERVER['HTTP_HOST'].'/';
 	$cacheBustPath = 
@@ -15,6 +16,7 @@ if(isset($isDev) && $isDev) {
 		
 	// Do the CacheBusting
 	file_get_contents($cacheBustPath);
+	/**/
 }
 
 // Most important part...

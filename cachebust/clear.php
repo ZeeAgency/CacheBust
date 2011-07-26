@@ -1,27 +1,35 @@
 <?php
-$cacheBustFolders = array('css', 'js');
-//$cacheBustSitePath = implode('/', array_slice(array_slice(explode('/', $_SERVER['SCRIPT_FILENAME']), 0, -1), 0, -1)).'/';
-$cacheBustSitePath = '../';
+// Silence : use a buffer
+ob_start();
 
-include_once('cssmin.php');
+// Little config
+$cacheBustFolders = array('css', 'js');
+$cacheBustIsForced = strpos($_SERVER['REQUEST_URI'], 'cachebust/clear.php') !== false;
+$cacheBustSitePath = $cacheBustIsForced ? '../' : '';
+
+// Read the last ID
 include_once('id.php');
+
+// Dependency
+include_once('cssmin.php');
+
 
 /* Temp */
 $cacheBustId = substr($cacheBustId, 1, -4);
 $newCacheBustId = (string) date('YmdHis');
 /**/
 
-/* Fake Minification : Just Duplicate a File */
+// Fake Minification : Just Duplicate a File
 function cacheBustMinFake($src, $target) {
 	file_put_contents($target, file_get_contents($src)); 
 }
 
-/* CSS Minification : Uses CSSMin */
+// CSS Minification : Uses CSSMin
 function cacheBustMinCSS($src, $target) {
 	file_put_contents($target, CssMin::minify(file_get_contents($src)));
 }
 
-/* JS Minification : Uses Google Closure Compiler Web Services (can be slow) */
+// JS Minification : Uses Google Closure Compiler Web Services (can be slow)
 function unused_cacheBustMinJS($src, $target) {
 	$script = file_get_contents($src);
 	$ch = curl_init('http://closure-compiler.appspot.com/compile');
@@ -34,8 +42,7 @@ function unused_cacheBustMinJS($src, $target) {
 	file_put_contents($target, $output);
 }
 
-
-/* Browse Folder : Recursive Method */
+// Browse Folder : Recursive Method
 function cacheBustBrowserFolder($path, $callback = false) {
 	$exp = explode('/', $path);
 	echo '<li><h1>'.$exp[count($exp)-1].'/</h1>';
@@ -59,7 +66,7 @@ function cacheBustBrowserFolder($path, $callback = false) {
 	echo '</li>';
 };
 
-/* CacheBust File */
+// CacheBust File
 function cacheBurstFile($file, $path) {
 	global $cacheBustId, $newCacheBustId;
 	
@@ -86,15 +93,15 @@ function cacheBurstFile($file, $path) {
 			echo '<li><h2><ins>'.$newVersion.'</ins></h2></li>';
 		}
 	} else {
-		
 		preg_match('/(\.'.date('Y').')/', $file, $matches);
 		if(is_file($path.'/'.$file) && count($matches) > 0) {
 			echo '<li><h2><del>'.$file.'</del></h2></li>';
 			unlink($path.'/'.$file);
 		}
 	}
-};
+}
 
+// Do the thing
 foreach($cacheBustFolders as $folder) {
 	cacheBustBrowserFolder($cacheBustSitePath.$folder, 'cacheBurstFile');
 }
@@ -104,8 +111,12 @@ foreach($cacheBustFolders as $folder) {
 $cacheBustId = '.'.$newCacheBustId.'.min';
 file_put_contents('id.php', '<?php $cacheBustId = \''.$cacheBustId.'\'; ?>');
 /**/
+
+// Close Buffer
 $output = ob_get_clean();
 
+// Show what happened only if it was asked
+if($cacheBustIsForced) {
 ?>
 <!doctype html>
 <style type="text/css">
@@ -130,3 +141,4 @@ ins {
 }
 </style>
 <ul><?= $output ?></ul>
+<?php } ?>
