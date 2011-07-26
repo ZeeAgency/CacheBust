@@ -6,6 +6,7 @@ ob_start();
 $cacheBustFolders = array('css', 'js');
 $cacheBustIsForced = strpos($_SERVER['REQUEST_URI'], 'cachebust/clear.php') !== false;
 $cacheBustSitePath = $cacheBustIsForced ? '../' : '';
+$cacheBustMin = $cacheBustIsForced;
 
 // Read the last ID
 include_once('id.php');
@@ -30,6 +31,7 @@ function cacheBustMinCSS($src, $target) {
 }
 
 // JS Minification : Uses Google Closure Compiler Web Services (can be slow)
+// Disabled for now
 function unused_cacheBustMinJS($src, $target) {
 	$script = file_get_contents($src);
 	$ch = curl_init('http://closure-compiler.appspot.com/compile');
@@ -45,7 +47,7 @@ function unused_cacheBustMinJS($src, $target) {
 // Browse Folder : Recursive Method
 function cacheBustBrowserFolder($path, $callback = false) {
 	$exp = explode('/', $path);
-	echo '<li><h1>'.$exp[count($exp)-1].'/</h1>';
+	echo '<li><h2>'.$exp[count($exp)-1].'/</h2>';
 
 	if($dir = opendir($path)) {
 	 	echo '<ul>';
@@ -87,7 +89,7 @@ function cacheBurstFile($file, $path) {
 		
 		
 		if($ext === 'css' || $ext === 'js') {
-			$minifyMethod = 'cacheBustMin'.(function_exists('cacheBustMin'.strtoupper($ext)) && !isset($_GET['nomin']) ? strtoupper($ext) : 'Fake');
+			$minifyMethod = 'cacheBustMin'.(function_exists('cacheBustMin'.strtoupper($ext)) && $cacheBustMin ? strtoupper($ext) : 'Fake');
 			
 			$minifyMethod($path.'/'.$file, $path.'/'.$newVersion);
 			echo '<li><h2><ins>'.$newVersion.'</ins></h2></li>';
@@ -109,7 +111,7 @@ foreach($cacheBustFolders as $folder) {
 
 /* Apply New Id */
 $cacheBustId = '.'.$newCacheBustId.'.min';
-file_put_contents('id.php', '<?php $cacheBustId = \''.$cacheBustId.'\'; ?>');
+file_put_contents($cacheBustSitePath.'cachebust/id.php', '<?php $cacheBustId = \''.$cacheBustId.'\'; ?>');
 /**/
 
 // Close Buffer
@@ -120,16 +122,47 @@ if($cacheBustIsForced) {
 ?>
 <!doctype html>
 <style type="text/css">
+html {
+	margin: 0;
+	padding: 0;
+	background: #444;
+}
+
 body {
+	margin: 20px auto;
+	padding: 40px;
+	width: 700px;
+	background: #EEE;
+	color: #222;
 	font-family: Monaco, monospace;
 	font-size: 60%;
+	
+	-moz-box-shadow: rgba(0, 0, 0, 0.5) 0 3px 8px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.5) 0 3px 8px;
+	-o-box-shadow: rgba(0, 0, 0, 0.5) 0 3px 8px;
+	-ms-box-shadow: rgba(0, 0, 0, 0.5) 0 3px 8px;
+	box-shadow: rgba(0, 0, 0, 0.5) 0 3px 8px;
+	
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-o-border-radius: 3px;
+	-ms-border-radius: 3px;
+	border-radius: 3px;
 }
-ul {
-	list-style: none;
+
+h1 {
+	margin: 0;
+	text-align: center;	
 }
+
 h1, h2, h3, h4, h5, h6 {
 	font-weight: normal;
 }
+
+ul {
+	list-style: none;
+}
+
 del {
 	text-decoration: line-through;
 	color: #AAA;
@@ -140,5 +173,6 @@ ins {
 	-webkit-box-shadow: #88e649 0 0 0px 3px;
 }
 </style>
+<h1>CacheBust Report</h1>
 <ul><?= $output ?></ul>
 <?php } ?>

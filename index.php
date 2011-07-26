@@ -1,25 +1,13 @@
 <?php
-// $isDev : Could be set by framework, host detection or whatever…
-$isDev = true;
+// $isDev : Could be set by Framework, Host Detection or Whatever…
+$isDev = false;
 
-// Dev Environment : Forces New Version Generation and No-Minification for Debugging
+// Dev Environment : Forces New Version Generation without Minification for Debugging
 if(isset($isDev) && $isDev) {
 	include_once('cachebust/clear.php');
-	/* * /
-	// Could be easiest…
-	// ie. $cacheBustPath = 'http://'.$_SERVER['HTTP_HOST'].'/';
-	$cacheBustPath = 
-		'http://'.
-		$_SERVER['HTTP_HOST'].
-		implode('/', array_slice(explode('/', $_SERVER['REQUEST_URI']), 0, -1)).
-		'/cachebust/clear.php?nomin';
-		
-	// Do the CacheBusting
-	file_get_contents($cacheBustPath);
-	/**/
 }
 
-// Most important part...
+// Most Important Part, Get the Current ID
 include_once('cachebust/id.php');
 ?>
 <!doctype html>
