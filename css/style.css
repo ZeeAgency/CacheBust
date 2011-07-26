@@ -66,3 +66,6 @@ pre var {
 	font-style: normal;
 	font-weight: normal;
 }
+pre i {
+	color: #aaafa7;
+}
