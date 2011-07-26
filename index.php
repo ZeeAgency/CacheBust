@@ -1,6 +1,6 @@
 <?php
 // $isDev : Could be set by Framework, Host Detection or Whatever…
-$isDev = false;
+$isDev = true;
 
 // Dev Environment : Forces New Version Generation without Minification for Debugging
 if(isset($isDev) && $isDev) {
