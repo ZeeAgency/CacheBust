@@ -6,8 +6,8 @@ html {
 
 body {
 	margin: 20px auto;
-	padding: 40px;
-	width: 700px;
+	padding: 30px;
+	width: 740px;
 	background: #EEE;
 	color: #222;
 	font-family: Trebuchet MS, Arial;
@@ -39,9 +39,38 @@ li {
 	padding: 10px;
 }
 
+pre,
 code,
 var {
 	font-family: Monaco, monospace;
-	color: #65ab18;
+	color: #4e8718;
 	text-shadow: #FFF 0 1px 0;
+}
+pre {
+	overflow: auto;
+	padding: 10px;
+	color: #a94a23;
+	background: #E0E0E0;
+}
+pre strong {
+	color: #a91a05;
+	font-weight: bold;
+}
+pre em {
+	color: #a93080;
+	font-style: normal;
+	font-weight: normal;
+}
+pre var {
+	color: #125b86;
+	font-style: normal;
+	font-weight: normal;
+}
+pre i {
+	color: #aaafa7;
+}
+
+p {
+	border: 1px solid #a91a05;
+	background: rgba(169, 26, 5, 0.57);
 }

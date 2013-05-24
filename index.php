@@ -1,4 +1,11 @@
 <?php
+/* This is useless for CacheBust use * /
+if(fopen('cachebust/id.php', 'a+')) {
+	die('ok');
+}
+
+/**/
+
 // $isDev : Could be set by Framework, Host Detection or Whatever...
 $isDev = true;
 
@@ -30,9 +37,9 @@ include_once('cachebust/id.php');
 		<li>For now, only CSS minification is supported. By default, this minification is only done when <var>$isDev</var> is <code>false</code>.</li>
 		<li>To force cacheburst in production environment, just hit <code>/cachebust/clear.php</code>.</li>
 	</ol>
-	
+
 	<h1>PHP Code</h1>
-	
+
 	<pre>
 <strong>&lt;?php</strong>
 <i>// $isDev : Could be set by Framework, Host Detection or Whatever...</i>
@@ -56,8 +63,8 @@ include_once('cachebust/id.php');
 
 <em>&lt;script</em> src="<var>js/script<strong>&lt;?= $cacheBustId ?&gt;</strong>.js</var>"<em>&gt;&lt;/script&gt;</em>
 </pre>
-	
-	
+
+
 	<!-- Notice the implementation -->
 	<script src="js/script<?= $cacheBustId ?>.js"></script>
 </body>

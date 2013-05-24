@@ -69,3 +69,8 @@ pre var {
 pre i {
 	color: #aaafa7;
 }
+
+p {
+	border: 1px solid #a91a05;
+	background: rgba(169, 26, 5, 0.57);
+}
